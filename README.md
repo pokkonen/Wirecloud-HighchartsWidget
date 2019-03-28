@@ -13,3 +13,5 @@ https://github.com/wirecloud-fiware/quick-start-development-tutorial/tree/master
 Widget creation
 ---
 Widget should follow structure shown below:
+
+![image](https://user-images.githubusercontent.com/14833656/55157818-0beb6100-5166-11e9-9842-297c518db08c.png)
