@@ -1,36 +1,73 @@
-testURL = 'http://date.jsontest.com/';
+"use strict";
 
-// Function will test Fiware platform http reguest and log
-// current date and time.
-function browser(searchUrl, searchHeaders) {
+var theChart;
 
-  MashupPlatform.http.makeRequest(searchUrl,{
-    method: 'GET',
-    contentType: "application/json",
-    requestHeaders: searchHeaders,
-    onSuccess: function (response) {
+function listen() {
+    MashupPlatform.wiring.registerCallback('Data', function(graphData) {
+		// data = [graphData, command to update graph]
+        console.log(graphData)
+		// Updates only the data on the graph
+		if (graphData.update === true) {
+			theChart.update({
+				series: graphData.data,
+		    });
+		// Initializes the graph
+		} else {
+			theChart = Highcharts.chart('container', {
+				title : {text: graphData.titles[0], x: -20},
+				subtitle: {text: graphData.titles[1], x: -20},
+				xAxis: {categories: graphData.categories},
+				yAxis: {title: {text: graphData.titles[3]},
+					plotLines: [{ value: 0, width: 2, color: "#808080" }]
+				},
+				tooltip: { valueSuffix: "" },
+				legend: { layout: "vertical", align: "right", verticalAlign: "middle", borderWidth: 0 },
+				series: graphData.data,
+			});
+		}
+	});
 
-      let jsonData = JSON.parse(response.responseText);
+	// $('#plain').click(function () {
+    //     chart.update({
+    //         chart: {
+    //             inverted: false,
+    //             polar: false
+    //         },
+    //         subtitle: {
+    //             text: 'Plain'
+    //         }
+    //     });
+    // });
+	//
+    // $('#inverted').click(function () {
+    //     chart.update({
+    //         chart: {
+    //             inverted: true,
+    //             polar: false
+    //         },
+    //         subtitle: {
+    //             text: 'Inverted'
+    //         }
+    //     });
+    // });
+	//
+    // $('#polar').click(function () {
+    //     chart.update({
+    //         chart: {
+    //             inverted: false,
+    //             polar: true
+    //         },
+    //         subtitle: {
+    //             text: 'Polar'
+    //         }
+    //     });
+    // });
 
-      console.log(jsonData);
-      MashupPlatform.widget.log(jsonData.date);
-      MashupPlatform.widget.log(jsonData.time);
-
-    },
-    on404: function (response) {
-        MashupPlatform.widget.log("Error 404: Not Found");
-    },
-    on401: function (response) {
-        MashupPlatform.widget.log("Error 401: Authentication failed");
-    },
-    on403: function (response) {
-        MashupPlatform.widget.log("Error 403: Authorization failed");
-    },
-    onFailure: function (response) {
-        MashupPlatform.widget.log("Unexpected response from the server");
-        MashupPlatform.widget.log(response);
-    }
-  });
+	// <button id="plain">Plain</button>
+	// <button id="inverted">Inverted</button>
+	// <button id="polar">Polar</button>
 }
 
-browser(testURL, '')
+document.addEventListener('DOMContentLoaded', function() {
+    listen();
+})
