@@ -6,7 +6,9 @@ function listen() {
     MashupPlatform.wiring.registerCallback('Data', function(graphData) {
 		// data = [graphData, command to update graph]
         console.log(graphData)
-		// Updates only the data on the graph
+		// Option to handle data in real time
+        // Requires for mainfunction to first send complete highcarts graph as seen below
+        // Then mainWidget needs to send continuously updated data for example every second
 		if (graphData.update === true) {
 			theChart.update({
 				series: graphData.data,
@@ -17,9 +19,7 @@ function listen() {
 				title : {text: graphData.titles[0], x: -20},
 				subtitle: {text: graphData.titles[1], x: -20},
 				xAxis: {categories: graphData.categories},
-				yAxis: {title: {text: graphData.titles[3]},
-					plotLines: [{ value: 0, width: 2, color: "#808080" }]
-				},
+				yAxis: {title: {text: graphData.titles[2]}}, // Option to use y-axis data, not used for now
 				tooltip: { valueSuffix: "" },
 				legend: { layout: "vertical", align: "right", verticalAlign: "middle", borderWidth: 0 },
 				series: graphData.data,
@@ -27,8 +27,9 @@ function listen() {
 		}
 	});
 
+    // Examples of highcharts tricks
 	// $('#plain').click(function () {
-    //     chart.update({
+    //     theChart.update({
     //         chart: {
     //             inverted: false,
     //             polar: false
@@ -38,9 +39,9 @@ function listen() {
     //         }
     //     });
     // });
-	//
+    //
     // $('#inverted').click(function () {
-    //     chart.update({
+    //     theChart.update({
     //         chart: {
     //             inverted: true,
     //             polar: false
@@ -50,9 +51,9 @@ function listen() {
     //         }
     //     });
     // });
-	//
+    //
     // $('#polar').click(function () {
-    //     chart.update({
+    //     theChart.update({
     //         chart: {
     //             inverted: false,
     //             polar: true
@@ -63,9 +64,7 @@ function listen() {
     //     });
     // });
 
-	// <button id="plain">Plain</button>
-	// <button id="inverted">Inverted</button>
-	// <button id="polar">Polar</button>
+
 }
 
 document.addEventListener('DOMContentLoaded', function() {
